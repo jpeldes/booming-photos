@@ -2,10 +2,12 @@ import { useCallback, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'hooks/app'
 import {
     selectCurrentPage,
-    selectCurrentPhotos,
+    selectGallerySearchString,
+    selectPhotosBySearchString,
     selectShouldFetchPhotos,
-    setGalleryPagePrevious,
     setGalleryPageNext,
+    setGalleryPagePrevious,
+    setGallerySearchString,
     setPhotos
 } from 'slices/photos'
 import { getAllPhotos } from 'api'
@@ -32,7 +34,7 @@ export function useFetchPhotos() {
 }
 
 export function usePaginatedPhotos() {
-    const photos = useAppSelector(selectCurrentPhotos())
+    const photos = useAppSelector(selectPhotosBySearchString())
     const currentPage = useAppSelector(selectCurrentPage())
 
     const dispatch = useAppDispatch()
@@ -44,4 +46,16 @@ export function usePaginatedPhotos() {
     }, [dispatch])
 
     return { photos, currentPage, openNextPage, openPreviousPage }
+}
+
+export const useGallerySearch = () => {
+    const searchString = useAppSelector(selectGallerySearchString())
+
+    const dispatch = useAppDispatch()
+
+    const updateSearchString = (searchString: string) => {
+        dispatch(setGallerySearchString(searchString))
+    }
+
+    return { searchString, updateSearchString }
 }

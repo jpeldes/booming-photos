@@ -6,13 +6,15 @@ interface PhotosState {
     shouldFetch: boolean
     currentPage: number
     itemsPerPage: number
+    searchString: string
 }
 
 const initialState: PhotosState = {
     list: [],
     shouldFetch: true,
     currentPage: 1,
-    itemsPerPage: 20
+    itemsPerPage: 20,
+    searchString: ''
 }
 
 const photosSlice = createSlice({
@@ -34,19 +36,25 @@ const photosSlice = createSlice({
             const minimumPage = 1
 
             state.currentPage = Math.max(minimumPage, prevPage)
+        },
+        setGallerySearchString: (state, action: PayloadAction<string>) => {
+            state.searchString = action.payload
+            state.currentPage = 1
         }
     }
 })
 
 // Actions
 
-export const { setPhotos, setGalleryPageNext, setGalleryPagePrevious } = photosSlice.actions
+export const { setPhotos, setGalleryPageNext, setGalleryPagePrevious, setGallerySearchString } =
+    photosSlice.actions
 
 // Selectors
 export const selectAllPhotos = () => (state: RootState) => state.photos.list
 export const selectShouldFetchPhotos = () => (state: RootState) => state.photos.shouldFetch
 export const selectCurrentPage = () => (state: RootState) => state.photos.currentPage
 export const selectItemsPerPage = () => (state: RootState) => state.photos.itemsPerPage
+export const selectGallerySearchString = () => (state: RootState) => state.photos.searchString
 
 export const selectPhotoById = (id: number) => (state: RootState) => {
     const list = selectAllPhotos()(state)
@@ -54,16 +62,44 @@ export const selectPhotoById = (id: number) => (state: RootState) => {
 }
 
 export const selectCurrentPhotos = () => (state: RootState) => {
+    const allPhotos = selectAllPhotos()(state)
+
+    return paginatePhotos({
+        list: allPhotos,
+        page: selectCurrentPage()(state),
+        itemsPerPage: selectItemsPerPage()(state)
+    })
+}
+
+export const selectPhotosBySearchString = () => (state: RootState) => {
     const list = selectAllPhotos()(state)
-    const page = selectCurrentPage()(state)
-    const itemsPerPage = selectItemsPerPage()(state)
+    const searchString = selectGallerySearchString()(state)
+    const searchStringLower = searchString.toLowerCase()
 
-    const startIndex = (page - 1) * itemsPerPage
-    const endIndex = page * itemsPerPage
+    const filteredList = list.filter((photo) =>
+        photo.title.toLowerCase().includes(searchStringLower)
+    )
 
-    return list.slice(startIndex, endIndex)
+    return paginatePhotos({
+        list: filteredList,
+        page: selectCurrentPage()(state),
+        itemsPerPage: selectItemsPerPage()(state)
+    })
 }
 
 // Reducers
 
 export default photosSlice.reducer
+
+// Helpers
+type PhotoPaginatorProps = {
+    list: Photo[]
+    page: number
+    itemsPerPage: number
+}
+const paginatePhotos = ({ list, page, itemsPerPage }: PhotoPaginatorProps) => {
+    const startIndex = (page - 1) * itemsPerPage
+    const endIndex = page * itemsPerPage
+
+    return list.slice(startIndex, endIndex)
+}
