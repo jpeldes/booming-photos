@@ -1,5 +1,7 @@
+import PhotoGallery from 'components/PhotoGallery'
+
 function App() {
-    return <div>Hello World!</div>
+    return <PhotoGallery />
 }
 
 export default App
