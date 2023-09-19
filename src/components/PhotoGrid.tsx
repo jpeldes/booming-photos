@@ -9,7 +9,7 @@ type PhotoGridProps = {
 
 function PhotoGrid({ photos }: PhotoGridProps) {
     return (
-        <section className="photo-grid">
+        <section className="flex flex-wrap gap-2 justify-center">
             {photos.map((photo) => (
                 <PhotoGridItem key={photo.id as React.Key} item={photo} />
             ))}

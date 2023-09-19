@@ -1,5 +1,6 @@
 import { useAppSelector } from 'hooks/app'
 import { useFetchPhotos } from 'hooks/photos'
+import { Card } from 'react-daisyui'
 import { redirect, useParams } from 'react-router-dom'
 import { selectPhotoById } from 'slices/photos'
 
@@ -19,17 +20,16 @@ const PhotoDetails = () => {
     }
 
     return (
-        <div>
-            <figure>
-                <figcaption>
-                    <h2>{photo.title}</h2>
-                </figcaption>
+        <main className="flex justify-center">
+            <Card>
+                <Card.Body>
+                    <Card.Title tag="h2">{photo.title}</Card.Title>
 
-                <img src={photo.url} alt={String(photo.id)} />
-
-                <p>This photo belongs to album {photo.albumId}</p>
-            </figure>
-        </div>
+                    <p>This photo belongs to album {photo.albumId}</p>
+                </Card.Body>
+                <Card.Image src={photo.url} alt={String(photo.id)} />
+            </Card>
+        </main>
     )
 }
 

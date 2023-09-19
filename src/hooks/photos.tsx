@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'hooks/app'
 import {
     selectCurrentPage,
@@ -36,12 +36,12 @@ export function usePaginatedPhotos() {
     const currentPage = useAppSelector(selectCurrentPage())
 
     const dispatch = useAppDispatch()
-    const openNextPage = () => {
+    const openNextPage = useCallback(() => {
         dispatch(setGalleryPageNext())
-    }
-    const openPreviousPage = () => {
+    }, [dispatch])
+    const openPreviousPage = useCallback(() => {
         dispatch(setGalleryPagePrevious())
-    }
+    }, [dispatch])
 
     return { photos, currentPage, openNextPage, openPreviousPage }
 }

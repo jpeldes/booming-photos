@@ -1,21 +1,20 @@
-import PhotoGrid from 'components/PhotoGrid'
 import { useFetchPhotos, usePaginatedPhotos } from 'hooks/photos'
+
+import PhotoGrid from 'components/PhotoGrid'
+import PhotoGalleryPagination from './PhotoGalleryPagination'
 
 const PhotoGallery = () => {
     useFetchPhotos()
 
-    const { photos, currentPage, openNextPage, openPreviousPage } = usePaginatedPhotos()
+    const { photos } = usePaginatedPhotos()
 
     return (
         <>
-            <main>
+            <main className="my-4">
                 <PhotoGrid photos={photos} />
             </main>
 
-            <footer>
-                <button onClick={() => openPreviousPage()}>Previous page</button>| {currentPage} |
-                <button onClick={() => openNextPage()}>Next page</button>
-            </footer>
+            <PhotoGalleryPagination />
         </>
     )
 }
