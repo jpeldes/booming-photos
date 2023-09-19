@@ -31,7 +31,7 @@ const photosSlice = createSlice({
         },
         setGalleryPagePrevious: (state) => {
             const prevPage = state.currentPage - 1
-            const minimumPage = 0
+            const minimumPage = 1
 
             state.currentPage = Math.max(minimumPage, prevPage)
         }
