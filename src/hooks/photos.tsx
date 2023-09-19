@@ -1,21 +1,27 @@
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'hooks/app'
-import { selectAllPhotos, setPhotos } from 'slices/photos'
+import { selectAllPhotos, selectShouldFetchPhotos, setPhotos } from 'slices/photos'
 import { getAllPhotos } from 'api'
 
 export function useFetchPhotos() {
     const dispatch = useAppDispatch()
 
+    const shouldFetchPhotos = useAppSelector(selectShouldFetchPhotos())
+
     useEffect(() => {
-        const fetchPhotos = async () => {
+        const fetchPhotos = async (shouldFetch: boolean) => {
+            if (!shouldFetch) {
+                return
+            }
+
             const { data } = await getAllPhotos()
             if (data) {
                 dispatch(setPhotos(data))
             }
         }
 
-        fetchPhotos()
-    }, [dispatch])
+        fetchPhotos(shouldFetchPhotos)
+    }, [dispatch, shouldFetchPhotos])
 }
 
 export function usePaginatedPhotos() {

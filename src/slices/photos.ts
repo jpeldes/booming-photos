@@ -3,10 +3,12 @@ import { Photo, RootState } from 'types'
 
 interface PhotosState {
     list: Photo[]
+    shouldFetch: boolean
 }
 
 const initialState: PhotosState = {
-    list: []
+    list: [],
+    shouldFetch: true
 }
 
 const photosSlice = createSlice({
@@ -15,6 +17,7 @@ const photosSlice = createSlice({
     reducers: {
         setPhotos: (state, action: PayloadAction<Photo[]>) => {
             state.list = action.payload
+            state.shouldFetch = false
         }
     }
 })
@@ -25,6 +28,13 @@ export const { setPhotos } = photosSlice.actions
 
 // Selectors
 export const selectAllPhotos = () => (state: RootState) => state.photos.list
+
+export const selectPhotoById = (id: number) => (state: RootState) => {
+    const list = selectAllPhotos()(state)
+    return list.find((photo) => photo.id === id)
+}
+
+export const selectShouldFetchPhotos = () => (state: RootState) => state.photos.shouldFetch
 
 // Reducers
 

@@ -1,3 +1,4 @@
+import React from 'react'
 import { Photo } from 'types'
 
 import PhotoGridItem from 'components/PhotoGridItem'
@@ -10,7 +11,7 @@ function PhotoGrid({ photos }: PhotoGridProps) {
     return (
         <section className="photo-grid">
             {photos.map((photo) => (
-                <PhotoGridItem item={photo} />
+                <PhotoGridItem key={photo.id as React.Key} item={photo} />
             ))}
         </section>
     )
