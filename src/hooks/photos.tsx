@@ -1,6 +1,13 @@
 import { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from 'hooks/app'
-import { selectAllPhotos, selectShouldFetchPhotos, setPhotos } from 'slices/photos'
+import {
+    selectCurrentPage,
+    selectCurrentPhotos,
+    selectShouldFetchPhotos,
+    setGalleryPagePrevious,
+    setGalleryPageNext,
+    setPhotos
+} from 'slices/photos'
 import { getAllPhotos } from 'api'
 
 export function useFetchPhotos() {
@@ -25,11 +32,16 @@ export function useFetchPhotos() {
 }
 
 export function usePaginatedPhotos() {
-    const page = 1
-    const pageSize = 20
+    const photos = useAppSelector(selectCurrentPhotos())
+    const currentPage = useAppSelector(selectCurrentPage())
 
-    const photos = useAppSelector(selectAllPhotos())
-    const photosToRender = photos.slice((page - 1) * pageSize, page * pageSize)
+    const dispatch = useAppDispatch()
+    const openNextPage = () => {
+        dispatch(setGalleryPageNext())
+    }
+    const openPreviousPage = () => {
+        dispatch(setGalleryPagePrevious())
+    }
 
-    return photosToRender
+    return { photos, currentPage, openNextPage, openPreviousPage }
 }
